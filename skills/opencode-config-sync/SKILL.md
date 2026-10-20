@@ -29,6 +29,14 @@ changes silently. Never force-push.
 
 ## Push local changes
 
+0. Check that every global skill lives inside the repository:
+   - List any `SKILL.md` under `%USERPROFILE%\.claude\skills` and
+     `%USERPROFILE%\.agents\skills`. Those compatibility sources are outside the
+     repository and never sync.
+   - Check the `skills` array in `opencode.jsonc` for entries that are not HTTP
+     catalogs and point outside the repository.
+   - If anything turns up, show the list and ask the user whether to move those
+     skills into `skills\<id>\`. Never push while silently leaving them behind.
 1. Review what changed: `git status --short` and `git diff`.
 2. Scan the staged diff for secrets before committing:
    `git add -A` then
@@ -52,6 +60,32 @@ Follow the "新设备初始化" section of the repository `README.md`, in order:
 7. Credentials are **not** in the repository: run `/connect` per provider and
    `/mcps` for OAuth MCP servers. Do not attempt to copy credential stores,
    tokens, or `auth.json` between devices.
+
+## Global skill placement
+
+Global skills live in exactly one place:
+
+```text
+%USERPROFILE%\.config\opencode\skills\<id>\SKILL.md
+```
+
+(`~/.config/opencode/skills/<id>/SKILL.md` on macOS/Linux.) The directory name is
+the skill ID and is case-sensitive; use lowercase kebab-case.
+
+- `~/.claude/skills` and `~/.agents/skills` are compatibility sources outside the
+  repository: skills placed there will not sync.
+- Avoid `skills` config entries that point outside the repository. HTTP catalogs
+  sync only the config line; their content is fetched from the network.
+- When the same ID exists both in a compatibility directory and in the
+  repository, the repository copy wins, but move the stray copy out anyway.
+
+To migrate a stray skill:
+
+```powershell
+Move-Item "$HOME\.claude\skills\<id>" "$HOME\.config\opencode\skills\<id>"
+```
+
+Then commit and push normally.
 
 ## Never sync
 

@@ -110,6 +110,45 @@ opencode service restart
 
 `cli.json` 会热加载，`opencode.jsonc` 改动后重启后台服务最稳妥。
 
+## 全局 skill 的同步
+
+全局 skill 只有一个存放位置：
+
+```text
+%USERPROFILE%\.config\opencode\skills\<skill-id>\SKILL.md
+```
+
+规则：
+
+- 目录名就是 skill ID，大小写敏感，统一用小写 kebab-case（如 `git-release`）。
+- 不要放在 `~/.claude/skills`、`~/.agents/skills`：这两个是兼容目录，在仓库之外，不会同步。
+- `opencode.jsonc` 的 `skills` 数组不要指向仓库外的路径；指向 HTTP 目录（`https://.../index.json`）时只有配置行会同步，skill 内容每次联网拉取。
+- 新建或安装 skill 后照常 commit + push，否则另一台设备看不到。
+- 内置 skill（`opencode`、`report`）随程序安装，不需要同步。
+
+同步前预检仓库之外是否还留着全局 skill：
+
+```powershell
+# 列出兼容目录里的 skill（不存在时无输出）
+Get-ChildItem "$HOME\.claude\skills","$HOME\.agents\skills" -Recurse -Filter SKILL.md -ErrorAction SilentlyContinue |
+  Select-Object -ExpandProperty FullName
+
+# 检查配置里是否引用了额外 skill 来源
+Select-String -Path "$HOME\.config\opencode\opencode.jsonc" -Pattern '"skills"'
+```
+
+发现漏在兼容目录里的 skill，搬进仓库再提交：
+
+```powershell
+Move-Item "$HOME\.claude\skills\<skill-id>" "$HOME\.config\opencode\skills\<skill-id>"
+cd "$HOME\.config\opencode"
+git add -A
+git commit -m "skills: add <skill-id>"
+git push
+```
+
+同一个 ID 在两处都存在时，`~/.config/opencode/skills` 的版本优先级更高，但仍建议删掉旧位置，避免以后混淆。
+
 ## 安全规则
 
 - 本仓库是**公开**仓库，只放非敏感配置。需要改为私有：`gh repo edit --visibility private`（改私有后新设备必须认证才能 clone、也无法直接抓取 README）。
