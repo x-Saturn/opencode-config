@@ -30,10 +30,14 @@
     "acceleration": false
   },
   "attention": {
-    "notifications": true,
+    "notifications": false,
     "sound": true
   },
   "terminal": {
     "title": true
+  },
+  "theme": {
+    "name": "opencode",
+    "mode": "dark"
   }
 }
