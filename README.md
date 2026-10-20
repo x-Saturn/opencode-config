@@ -2,8 +2,17 @@
 
 在多台设备之间同步 OpenCode 的全局配置和 TUI 设置。配置目录本身就是一个 Git 仓库。
 
+- 仓库地址：https://github.com/x-Saturn/opencode-config
 - Windows 路径：`%USERPROFILE%\.config\opencode`
 - macOS / Linux 路径：`~/.config/opencode`
+
+在新设备上，把这个地址交给该设备的 OpenCode 让它自己操作即可：
+
+```text
+https://raw.githubusercontent.com/x-Saturn/opencode-config/main/README.md
+```
+
+让它读取本文件并执行「新设备初始化」一节。
 
 ## 同步范围
 
@@ -54,7 +63,7 @@
 4. 克隆本仓库到配置目录：
 
    ```bash
-   git clone <REPO_URL> ~/.config/opencode
+   git clone https://github.com/x-Saturn/opencode-config.git ~/.config/opencode
    ```
 
    Windows 目标路径写 `"$HOME\.config\opencode"`。
@@ -103,6 +112,7 @@ opencode service restart
 
 ## 安全规则
 
+- 本仓库是**公开**仓库，只放非敏感配置。需要改为私有：`gh repo edit --visibility private`（改私有后新设备必须认证才能 clone、也无法直接抓取 README）。
 - 仓库里**不放明文密钥**。需要凭据时用变量替换：
   - `{env:OPENAI_API_KEY}`：读环境变量
   - `{file:~/.secrets/openai-key}`：读本机文件，文件本身不进仓库
