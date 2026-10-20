@@ -88,6 +88,11 @@ https://raw.githubusercontent.com/x-Saturn/opencode-config/main/README.md
 
 8. 确认 `opencode mcp list` 状态正常，并在 `/models` 里检查默认模型是否可用。
 
+### 环境依赖
+
+- **Python 3**：`skills/derivation/scripts/verify.py` 的数值校验（T0）依赖它。没有 Python 时该 skill 的校验无法运行。
+- **sympy**（可选）：执行 `pip install sympy` 后 `--symbolic` 的 T1 符号校验才生效；未安装时脚本会提示并跳过，不阻塞推导。
+
 ## 日常同步
 
 改动一端后：
