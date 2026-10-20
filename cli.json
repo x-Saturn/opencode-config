@@ -3,6 +3,7 @@
   "keybinds": {
     "opencode.settings": "alt+s",
     "command.palette.show": "alt+p",
+    "prompt.skills": "alt+g",
     "session.background": "alt+z",
     "session.pin.toggle": "alt+l",
     "session.tab.next": "alt+pagedown,alt+down",
